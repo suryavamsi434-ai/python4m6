@@ -1,0 +1,37 @@
+class Solution(object):
+    def longestPalindrome(self, s):
+        """
+        :type s: str
+        :rtype: str
+        """
+        if not s:
+            return ""
+            
+        longest = ""
+        
+        # Helper function to expand around a center
+        def expand(left, right):
+            while left >= 0 and right < len(s) and s[left] == s[right]:
+                left -= 1
+                right += 1
+            # Return the palindrome found: s[left+1 : right]
+            return s[left + 1: right]
+
+        # Iterate through every possible center
+        for i in range(len(s)):
+            # Case 1: Odd length palindrome (center is s[i])
+            # E.g., "b a b" -> center is 'a'
+            palindrome_odd = expand(i, i)
+            
+            # Case 2: Even length palindrome (center is s[i] and s[i+1])
+            # E.g., "b b a b" -> center is 'bb'
+            palindrome_even = expand(i, i + 1)
+            
+            # Update the longest palindrome found so far
+            if len(palindrome_odd) > len(longest):
+                longest = palindrome_odd
+                
+            if len(palindrome_even) > len(longest):
+                longest = palindrome_even
+                
+        return longest
