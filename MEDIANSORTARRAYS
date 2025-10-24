@@ -1,0 +1,59 @@
+class Solution(object):
+    def findMedianSortedArrays(self, nums1, nums2):
+        """
+        :type nums1: List[int]
+        :type nums2: List[int]
+        :rtype: float
+        """
+        A, B = nums1, nums2
+        m, n = len(A), len(B)
+
+        # Ensure A is the shorter array for simplicity in binary search
+        if m > n:
+            A, B = B, A
+            m, n = n, m
+        
+        # 'half_len' is the total number of elements needed in the left partition
+        # The +1 ensures that in an odd total length, the median is the last element of the left partition.
+        half_len = (m + n + 1) // 2
+
+        # Binary search range for the partition in the shorter array (A)
+        low, high = 0, m
+
+        while low <= high:
+            # i is the partition point in A. 
+            # It means there are 'i' elements from A in the left partition.
+            i = low + (high - low) // 2
+            
+            # j is the partition point in B. 
+            # It ensures the left partition has 'half_len' total elements.
+            j = half_len - i
+
+            # L1: The last element of the left partition in A.
+            # R1: The first element of the right partition in A.
+            L1 = A[i-1] if i > 0 else float('-inf')
+            R1 = A[i] if i < m else float('inf')
+            
+            # L2: The last element of the left partition in B.
+            # R2: The first element of the right partition in B.
+            L2 = B[j-1] if j > 0 else float('-inf')
+            R2 = B[j] if j < n else float('inf')
+
+            # Correct partition found:
+            # L1 <= R2 and L2 <= R1 means all elements in the left half 
+            # (max(L1, L2)) are less than or equal to all elements in the right half (min(R1, R2)).
+            if L1 <= R2 and L2 <= R1:
+                # Total length is odd
+                if (m + n) % 2 == 1:
+                    return float(max(L1, L2))
+                # Total length is even
+                else:
+                    return (max(L1, L2) + min(R1, R2)) / 2.0
+
+            # Partition in A is too far to the right (L1 is too big). Move left.
+            elif L1 > R2:
+                high = i - 1
+            
+            # Partition in A is too far to the left (L2 is too big). Move right.
+            else: # L2 > R1
+                low = i + 1
