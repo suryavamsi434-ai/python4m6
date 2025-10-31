@@ -1,0 +1,25 @@
+class Solution(object):
+    def intToRoman(self, num):
+        """
+        :type num: int
+        :rtype: str
+        """
+        # Define the integer values and their corresponding Roman symbols 
+        # in descending order. This ensures the greedy subtraction works correctly.
+        values = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1]
+        symbols = ["M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"]
+        
+        roman_numeral = ""
+        
+        # Iterate through the values and symbols simultaneously
+        for i in range(len(values)):
+            value = values[i]
+            symbol = symbols[i]
+            
+            # While the current number is greater than or equal to the current value, 
+            # append the symbol to the result and subtract the value from the number.
+            while num >= value:
+                roman_numeral += symbol
+                num -= value
+                
+        return roman_numeral
